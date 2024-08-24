@@ -233,6 +233,6 @@ if __name__ == "__main__":
     asyncio.run(main())
 
     # Fetch discord token via os.env
-    token = os.getenv('DISCORD_TOKEN')
+    token = os.getenv('DISCORD_BOT_TOKEN')
     # Run the client with the token
     client.run(token)
