@@ -128,16 +128,18 @@ async def analyze(interaction: discord.Interaction):
     # Database creation date
     database_creation_time = datetime.datetime.now()
 
-    # Insert the creation date of the database if it doesn't exist
-    cursor.execute('''
-        INSERT OR IGNORE INTO database_creation_date (created_at)
-        VALUES (?)
-    ''', (database_creation_time,))
-
-    # Get the creation date of the database
+    # Check if the database creation date already exists
     cursor.execute('''
         SELECT created_at FROM database_creation_date
     ''')
+    existing_date = cursor.fetchone()
+
+    if not existing_date:
+        # Insert the creation date of the database if it doesn't exist
+        cursor.execute('''
+            INSERT INTO database_creation_date (created_at)
+            VALUES (?)
+        ''', (database_creation_time,))
 
     # Get the creation date of the database
     created_at = cursor.fetchone()
