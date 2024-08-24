@@ -108,7 +108,7 @@ async def analyze(interaction: discord.Interaction):
         return dt.strftime('%Y-%m-%d %H:%M:%S')
 
     def convert_datetime(s):
-        return datetime.datetime.strptime(s.decode('utf-8'), '%Y-%m-%d %H:%M:%S')
+        return datetime.datetime.strptime(s.decode('utf-8'), '%d-%m-%Y %H:%M:%S')
 
     # Register the adapter and converter
     sqlite3.register_adapter(datetime.datetime, adapt_datetime)
