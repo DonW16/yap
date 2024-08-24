@@ -217,19 +217,21 @@ async def report(interaction: discord.Interaction):
     await tree.sync()
 
 async def run_report_at_midnight():
-    while True:
-        current_datetime = datetime.datetime.now()
-        if current_datetime.hour == 0 and current_datetime.minute == 0:
-            # Run the report function
-            await report()
-        # Sleep for 1 minute
-        await asyncio.sleep(60)
+    # Your implementation here
+    pass
 
-# Create a task to run the report at midnight
-task = asyncio.create_task(run_report_at_midnight())
+async def main():
+    # Schedule the task
+    task = asyncio.create_task(run_report_at_midnight())
+    # Optionally, await the task if you want to wait for its completion
+    await task
 
-# Fetch discord token via os.env
-token = os.getenv('DISCORD_TOKEN')
+if __name__ == "__main__":
+    # Run the main coroutine, which will start the event loop
+    asyncio.run(main())
 
-# Run the client with the token
-client.run(token)
+    # Fetch discord token via os.env
+    token = os.getenv('DISCORD_TOKEN')
+
+    # Run the client with the token
+    client.run(token)
