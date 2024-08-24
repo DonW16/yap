@@ -6,6 +6,7 @@ import sqlite3
 import random
 import os
 import pytz
+import asyncio
 
 intents = discord.Intents.default()
 intents.message_content = True  # Enable the message content intent
@@ -214,6 +215,18 @@ async def analyze(interaction: discord.Interaction):
 async def report(interaction: discord.Interaction):
     await analyze(interaction)
     await tree.sync()
+
+async def run_report_at_midnight():
+    while True:
+        current_datetime = datetime.datetime.now()
+        if current_datetime.hour == 0 and current_datetime.minute == 0:
+            # Run the report function
+            await report()
+        # Sleep for 1 minute
+        await asyncio.sleep(60)
+
+# Create a task to run the report at midnight
+task = asyncio.create_task(run_report_at_midnight())
 
 # Fetch discord token via os.env
 token = os.getenv('DISCORD_TOKEN')
