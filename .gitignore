@@ -1,6 +1,7 @@
 .vscode/
 dev_env/
 yap.db
+yap.db-journal
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

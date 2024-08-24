@@ -234,6 +234,5 @@ if __name__ == "__main__":
 
     # Fetch discord token via os.env
     token = os.getenv('DISCORD_TOKEN')
-
     # Run the client with the token
     client.run(token)
