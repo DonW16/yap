@@ -62,7 +62,18 @@ async def analyze(interaction: discord.Interaction):
 
     # Count the most commonly used word
     word_count = Counter(word for message in messages_within_time_window for word in message.content.split())
-    most_common_word_today = word_count.most_common(1)[0][0]
+    
+    # Filter out most common words in the English language
+    common_words = [
+        "the", "be", "to", "of", "and", "a", "in", "that", "have", "I", "it", "for", "not", "on", "with", "he", "as", "you", "do", "at",
+        "this", "but", "his", "by", "from", "they", "we", "say", "her", "she", "or", "an", "will", "my", "one", "all", "would", "there", "their",
+        "what", "so", "up", "out", "if", "about", "who", "get", "which", "go", "me", "when", "make", "can", "like", "time", "no", "just", "him",
+        "know", "take", "people", "into", "year", "your", "good", "some", "could", "them", "see", "other", "than", "then", "now", "look", "only", "come",
+        "its", "over", "think", "also", "back", "after", "use", "two", "how", "our", "work", "first", "well", "way", "even", "new", "want", "because", "any",
+        "these", "give", "day", "most", "us"
+    ]
+    
+    most_common_words_today = [word for word, count in word_count.most_common(10) if word.lower() not in common_words]
 
     # Find the longest message
     longest_message = max(messages_within_time_window, key=lambda message: len(message.content))
@@ -89,17 +100,21 @@ async def analyze(interaction: discord.Interaction):
     emojis = ["🥇", "🥈", "🥉"]
     
     report = f'**Top 3 Most Active Yappers for today:** \n'
-    report += f"\n**Total Number of Messages today:** {total_messages_today}\n"
-    report += f"**Total Number of Words today:** {total_words_today}\n"
-    report += f"**Most Commonly Used Word today:** {most_common_word_today}\n"
-    report += f"**Longest Message today:** {longest_message_length_today} characters by {longest_message_author_today} {longest_message_url_today} \n"
-    
     for rank, (user, count) in enumerate(top_posters, 1):
         if rank <= 3:
             emoji = emojis[rank - 1]
         else:
             emoji = random.choice(["🎖️", "🏆", "🎯", "🔥", "⭐", "💯", "🤡"])
         report += f"{rank}. {user.name} - {count} messages {emoji}\n"
+
+    report += f"\n**Total Number of Messages today:** {total_messages_today}\n"
+    report += f"**Total Number of Words today:** {total_words_today}\n"
+    report += f"**Longest Message today:** {longest_message_length_today} characters by {longest_message_author_today} {longest_message_url_today} \n"
+    
+    report += f"**Commonly Used Words today:**\n"
+    for rank, word in enumerate(most_common_words_today[:10], 1):
+        report += f"{rank}. {word}\n"
+    
 
     #report += f"**Topic of Discussion:** {topic_of_discussion}\n"
     
@@ -132,6 +147,7 @@ async def analyze(interaction: discord.Interaction):
     cursor.execute('''
         SELECT created_at FROM database_creation_date
     ''')
+    
     existing_date = cursor.fetchone()
 
     if not existing_date:
@@ -140,9 +156,16 @@ async def analyze(interaction: discord.Interaction):
             INSERT INTO database_creation_date (created_at)
             VALUES (?)
         ''', (database_creation_time,))
+        conn.commit()
 
-    # Get the creation date of the database
-    created_at = cursor.fetchone()
+    # Create table message_counts to store the message count for each user if it doesn't exist
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS message_counts (
+            user_id INTEGER PRIMARY KEY,
+            username TEXT,
+            message_count INTEGER
+        )
+    ''')
 
     # Update the message count for each user
     for user, new_count in user_message_count.items():
@@ -177,6 +200,14 @@ async def analyze(interaction: discord.Interaction):
 
     top_posters = cursor.fetchall()
 
+    # Check if the database creation date already exists
+    cursor.execute('''
+        SELECT created_at FROM database_creation_date
+    ''')
+
+    # Get the creation date of the database
+    created_at = cursor.fetchone()
+
     created_at = created_at[0]
 
     if created_at:
@@ -196,7 +227,7 @@ async def analyze(interaction: discord.Interaction):
             report += f'{rank}. {username} - {message_count} messages\n'
 
     # Count the most commonly used words all time
-    all_time_word_count = Counter(word for message in messages for word in message.content.split())
+    all_time_word_count = Counter(word for message in messages for word in message.content.split() if word.lower() not in common_words)
     most_common_words_all_time = all_time_word_count.most_common(10)
 
     # Create the leaderboard for most commonly used words
@@ -204,7 +235,7 @@ async def analyze(interaction: discord.Interaction):
     
     for rank, (word, count) in enumerate(most_common_words_all_time, 1):
         word_leaderboard += f"{rank}. {word} - {count} occurrences\n"
-    report += f"\n**Most Commonly Used Words all time:**\n{word_leaderboard}"
+    report += f"\n**Commonly Used Words all time:**\n{word_leaderboard}"
 
     conn.commit()
     conn.close()
@@ -233,6 +264,7 @@ if __name__ == "__main__":
     asyncio.run(main())
 
     # Fetch discord token via os.env
-    token = os.getenv('DISCORD_BOT_TOKEN')
+    token = os.getenv(str('DISCORD_BOT_TOKEN'))
+
     # Run the client with the token
     client.run(token)
