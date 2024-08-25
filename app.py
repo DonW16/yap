@@ -122,7 +122,7 @@ async def analyze(interaction: discord.Interaction):
         return dt.strftime('%Y-%m-%d %H:%M:%S')
 
     def convert_datetime(s):
-        return datetime.datetime.strptime(s.decode('utf-8'), '%d-%m-%Y %H:%M:%S')
+        return datetime.datetime.strptime(s.decode('utf-8'), '%d/%m/%Y %H:%M:%S')
 
     # Register the adapter and converter
     sqlite3.register_adapter(datetime.datetime, adapt_datetime)
@@ -140,7 +140,7 @@ async def analyze(interaction: discord.Interaction):
     ''')
 
     # Database creation date
-    database_creation_time = datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+    database_creation_time = datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')
 
     # Check if the database creation date already exists
     cursor.execute('''
