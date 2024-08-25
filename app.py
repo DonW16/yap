@@ -110,7 +110,6 @@ async def analyze(interaction: discord.Interaction):
     report += f"\n**Total Number of Messages today:** {total_messages_today}\n"
     report += f"**Total Number of Words today:** {total_words_today}\n"
     report += f"**Longest Message today:** {longest_message_length_today} characters by {longest_message_author_today} {longest_message_url_today} \n"
-    
     report += f"**Commonly Used Words today:**\n"
     for rank, word in enumerate(most_common_words_today[:10], 1):
         report += f"{rank}. {word}\n"
@@ -141,7 +140,7 @@ async def analyze(interaction: discord.Interaction):
     ''')
 
     # Database creation date
-    database_creation_time = datetime.datetime.now()
+    database_creation_time = datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')
 
     # Check if the database creation date already exists
     cursor.execute('''
