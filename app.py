@@ -96,7 +96,7 @@ async def analyze(interaction: discord.Interaction):
     # Create the report
     current_datetime = datetime.datetime.now()
     
-    current_datetime = current_datetime.strftime('%d-%m-%Y %H:%M:%S')
+    current_datetime = current_datetime.strftime('%d/%m/%Y %H:%M:%S')
     emojis = ["🥇", "🥈", "🥉"]
     
     report = f'**Top 3 Most Active Yappers for today:** \n'
