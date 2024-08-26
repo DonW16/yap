@@ -110,9 +110,9 @@ async def analyze(interaction: discord.Interaction):
     report += f"\n**Total Number of Messages today:** {total_messages_today}\n"
     report += f"**Total Number of Words today:** {total_words_today}\n"
     report += f"**Longest Message today:** {longest_message_length_today} characters by {longest_message_author_today} {longest_message_url_today} \n"
-    report += f"**Commonly Used Words today:**\n"
-    for rank, word in enumerate(most_common_words_today[:10], 1):
-        report += f"{rank}. {word}\n"
+    # report += f"**Commonly Used Words today:**\n"
+    # for rank, word in enumerate(most_common_words_today[:10], 1):
+    #     report += f"{rank}. {word}\n"
     
 
     #report += f"**Topic of Discussion:** {topic_of_discussion}\n"
@@ -232,9 +232,9 @@ async def analyze(interaction: discord.Interaction):
     # Create the leaderboard for most commonly used words
     word_leaderboard = ""
     
-    for rank, (word, count) in enumerate(most_common_words_all_time, 1):
-        word_leaderboard += f"{rank}. {word} - {count} occurrences\n"
-    report += f"\n**Commonly Used Words all time:**\n{word_leaderboard}"
+    # for rank, (word, count) in enumerate(most_common_words_all_time, 1):
+    #     word_leaderboard += f"{rank}. {word} - {count} occurrences\n"
+    # report += f"\n**Commonly Used Words all time:**\n{word_leaderboard}"
 
     conn.commit()
     conn.close()
